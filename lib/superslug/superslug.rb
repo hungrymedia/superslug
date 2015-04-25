@@ -1,59 +1,64 @@
-module SuperSlug
-  extend ActiveSupport::Concern
+class << ActiveRecord::Base
 
-  included do
-    after_save :sluggify_slug
+  def has_superslug(source = :title, dest = :slug, options = {})
 
-    def self.find(input)
+    source = source.to_s
+    dest   = dest.to_s
+
+    # ---------------------------------------- Query Helpers
+
+    def find(input)
       if input.class == Array
         super
       else
         input.to_i.to_s == input.to_s ? super : find_by_slug(input)
       end
     end
-  end
 
-  def sluggify_slug
-    if slug.blank?
-      update_column(:slug, create_slug)
-    else
-      new_slug = slug.gsub(/[^a-zA-Z0-9 \-]/, "") # remove all bad characters
-      new_slug.gsub!(/\ /, "-") # replace spaces with underscores
-      new_slug.gsub!(/\-+/, "-") # replace repeating underscores
-      update_column(:slug, new_slug) unless slug == new_slug
+    define_method "to_param" do
+      send(dest)
     end
-  end
 
-  def create_slug
-    slug = self.title.downcase.gsub(/\&/, ' and ') # & -> and
-    slug.gsub!(/[^a-zA-Z0-9 \-]/, "") # remove all bad characters
-    slug.gsub!(/\ /, "-") # replace spaces with underscores
-    slug.gsub!(/\-+/, "-") # replace repeating underscores
+    # ---------------------------------------- Validations
 
-    dups = self.class.name.constantize.where(:slug => slug)
-    if dups.count == 1 and dups.first != self
-      if self.try(:idx)
-        slug = "#{slug}-#{self.idx}"
-      else
-        slug = "#{slug}-#{self.id}"
+    validates :"#{source}", :presence => true
+
+    # ---------------------------------------- Callbacks
+
+    after_save :"convert_#{source}_to_#{dest}"
+
+    define_method "convert_#{source}_to_#{dest}" do
+      # reference the separator option
+      separator = options[:separator].present? ? options[:separator] : '-'
+      # Set the slug column to the source column if it's
+      # empty
+      superslug = send(dest).blank? ? self.send(source) : self.send(dest)
+      # make lower case
+      superslug = superslug.downcase
+      # replace ampersands with 'and'
+      superslug.gsub!(/\&/, ' and ')
+      # remove all bad characters
+      # (we allow hyphens, underscores, and plus marks)
+      superslug.gsub!(/[^a-zA-Z0-9 \-\_\+]/, "")
+      # replace spaces with underscores
+      superslug.gsub!(/\ /, separator)
+      # replace repeating underscores
+      superslug.gsub!(/#{separator}+/, separator)
+      # Find all records with the same slug value for the
+      # slug column
+      duplicates = self.class.name.constantize.where(dest.to_sym => superslug)
+      # Append the ID to the end of the slug if the slug
+      # column is already taken
+      if (duplicates - [self]).size > 0
+        superslug = "#{superslug}#{separator}#{self.id}"
+      end
+      # Update the column in the database unless it matches
+      # what's already there
+      unless superslug == self.send(dest)
+        update_columns(dest.to_sym => superslug)
       end
     end
-    slug
+
   end
 
-  def make_slug_unique(slug)
-    dups = self.class.name.constantize.where(:slug => slug)
-    if dups.count == 1 and dups.first != self
-      if self.try(:idx)
-        slug = "#{slug}-#{self.idx}"
-      else
-        slug = "#{slug}-#{self.id}"
-      end
-    end
-    slug
-  end
-
-  def to_param
-    slug
-  end
 end
