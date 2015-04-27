@@ -11,7 +11,7 @@ This gem is meant to work with Ruby on Rails projects. I recommend you add it
 to your project's Gemfile:
 
 ```ruby
-gem 'mark_it_zero'
+gem 'superslug'
 ```
 
 Then install your bundle:
