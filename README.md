@@ -41,9 +41,12 @@ while the destination (dest) column is *where the sluggified string is stored*.
 
 ### Options
 
-The only option is `separator`, which defines the character with which to fill
-blank spaces in the string. For example, if it is a hyphen, then `Hello World`
-becomes `hello-world`. See below for an example.
+* **separator**: Defines the character with which to fill blank spaces in the
+  string. For example, if it is a hyphen, then `Hello World` becomes `hello-
+  world`. See below for an example.
+* **force_update**: If `true`, the destination column (slug) will always be set
+  when the record is saved. Otherwise, it doesn't change once it is first
+  created, unless manually set.
 
 ### Example
 
