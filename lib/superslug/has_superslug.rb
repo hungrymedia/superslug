@@ -31,8 +31,13 @@ class << ActiveRecord::Base
       # reference the separator option
       separator = options[:separator].present? ? options[:separator] : '-'
       # Set the slug column to the source column if it's
-      # empty
-      superslug = send(dest).blank? ? self.send(source) : self.send(dest)
+      # empty, or always set it to the source if overridden
+      # in options
+      if options[:force_update] == true
+        superslug = self.send(source)
+      else
+        superslug = send(dest).blank? ? self.send(source) : self.send(dest)
+      end
       # make lower case
       superslug = superslug.downcase
       # replace ampersands with 'and'
