@@ -51,8 +51,8 @@ class << ActiveRecord::Base
       superslug.gsub!(/#{separator}+/, separator)
       # Find all records with the same slug value for the
       # slug column
-      if options[:within_context]
-        duplicates = self.send(options[:within_context].to_s)
+      if options[:context]
+        duplicates = self.send(options[:context].to_s)
           .send(self.class.table_name.to_s)
           .where(dest.to_sym => superslug)
       else

@@ -47,15 +47,18 @@ while the destination (dest) column is *where the sluggified string is stored*.
 * **force_update**: If `true`, the destination column (slug) will always be set
   when the record is saved. Otherwise, it doesn't change once it is first
   created, unless manually set.
+* **context**: If you pass a symbol of a `belongs_to` relationship, the slug
+  will only need to be unique within the association.
 
 ### Example
 
 If you have a `Page` model that has a `name` and a `permalink` column, and you
-want to use underscore separators, then your model would look like this:
+want to use underscore separators, and only force the page slug to be unique within a category, then your model would look like this:
 
 ```ruby
 class Page < ActiveRecord::Base
-  has_superslug :name, :permalink, :separator => '_'
+  belongs_to :category
+  has_superslug :name, :permalink, :separator => '_', :context => :category
 end
 ```
 
