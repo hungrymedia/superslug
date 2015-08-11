@@ -14,6 +14,7 @@ class Page < ActiveRecord::Base
 
   belongs_to :site
 
-  has_superslug :name, :permalink, :separator => '_', :within_context => Site
+  has_superslug :name, :permalink, :separator => '_', :force_update => true,
+                :within_context => Site
 
 end

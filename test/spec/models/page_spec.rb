@@ -26,20 +26,26 @@ RSpec.describe Page, :type => :model do
   end
 
   it 'will use underscores if the option is specified' do
-    page = create(:page, :name => 'Hello World')
-    expect(page.permalink).to eq('hello_world')
+    page = create(:page, :name => 'Hello World 01')
+    expect(page.permalink).to eq('hello_world_01')
   end
 
   it 'will not append the id if an identical slug exists but belongs to a different site' do
-    create(:page, :name => 'Hello World', :site => @site_1)
-    page = create(:page, :name => 'Hello World', :site => @site_2)
-    expect(page.permalink).to eq('hello_world')
+    create(:page, :name => 'Hello World 02', :site => @site_1)
+    page = create(:page, :name => 'Hello World 02', :site => @site_2)
+    expect(page.permalink).to eq('hello_world_02')
   end
 
   it 'will append the id if the slug is duplicated for records belonging to the same site' do
-    create(:page, :name => 'Hello World', :site => @site_1)
-    page = create(:page, :name => 'Hello World', :site => @site_1)
-    expect(page.permalink).to eq("hello_world_#{page.id}")
+    create(:page, :name => 'Hello World 03', :site => @site_1)
+    page = create(:page, :name => 'Hello World 03', :site => @site_1)
+    expect(page.permalink).to eq("hello_world_03_#{page.id}")
+  end
+
+  it 'will change the slug if forced' do
+    page = create(:page, :name => 'Hello World 04')
+    page.update(:name => 'Hello World 05')
+    expect(page.permalink).to eq('hello_world_05')
   end
 
 end
