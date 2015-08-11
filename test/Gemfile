@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.1.0'
 gem 'pg'
 
-gem 'superslug'
+gem 'superslug', :path => File.expand_path('..')
 
 group :development do
   gem 'guard-rspec', :require => false
