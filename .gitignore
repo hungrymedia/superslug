@@ -1,2 +1,17 @@
 .bundle/
 pkg/
+
+###########################
+# Dummy App
+###########################
+
+# Ignore bundler config.
+/test/.bundle
+
+# Ignore the default SQLite database.
+/test/db/*.sqlite3
+/test/db/*.sqlite3-journal
+
+# Ignore all logfiles and tempfiles.
+/test/log/*.log
+/test/tmp
