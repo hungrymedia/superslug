@@ -17,8 +17,9 @@ ActiveRecord::Schema.define(version: 20150811140335) do
   enable_extension "plpgsql"
 
   create_table "pages", force: true do |t|
-    t.string   "title"
-    t.string   "slug"
+    t.string   "name"
+    t.string   "permalink"
+    t.integer  "site_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

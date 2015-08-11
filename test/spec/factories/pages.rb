@@ -3,16 +3,16 @@
 # Table name: pages
 #
 #  id         :integer          not null, primary key
-#  title      :string(255)
-#  slug       :string(255)
+#  name       :string(255)
+#  permalink  :string(255)
+#  site_id    :integer
 #  created_at :datetime
 #  updated_at :datetime
 #
 
 FactoryGirl.define do
   factory :page do
-    title "MyString"
-slug "MyString"
+    name { Faker::Lorem.words(4).join(' ') }
+    site
   end
-
 end

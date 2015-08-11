@@ -11,8 +11,6 @@
 
 FactoryGirl.define do
   factory :site do
-    title "MyString"
-slug "MyString"
+    title { Faker::Lorem.words(4).join(' ') }
   end
-
 end
