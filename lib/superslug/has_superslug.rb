@@ -51,7 +51,13 @@ class << ActiveRecord::Base
       superslug.gsub!(/#{separator}+/, separator)
       # Find all records with the same slug value for the
       # slug column
-      duplicates = self.class.name.constantize.where(dest.to_sym => superslug)
+      if options[:within_context]
+        duplicates = self.send(options[:within_context].to_s)
+          .send(self.class.table_name.to_s)
+          .where(dest.to_sym => superslug)
+      else
+        duplicates = self.class.name.constantize.where(dest.to_sym => superslug)
+      end
       # Append the ID to the end of the slug if the slug
       # column is already taken
       if (duplicates - [self]).size > 0
