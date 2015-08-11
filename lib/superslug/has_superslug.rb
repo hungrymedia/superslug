@@ -39,12 +39,12 @@ class << ActiveRecord::Base
         superslug = send(dest).blank? ? self.send(source) : self.send(dest)
       end
       # make lower case
-      superslug = superslug.downcase
+      superslug = superslug.downcase.strip
       # replace ampersands with 'and'
       superslug.gsub!(/\&/, ' and ')
       # remove all bad characters
       # (we allow hyphens, underscores, and plus marks)
-      superslug.gsub!(/[^a-zA-Z0-9 \-\_\+]/, "")
+      superslug.gsub!(/[^a-zA-Z0-9 \-\_]/, "")
       # replace spaces with underscores
       superslug.gsub!(/\ /, separator)
       # replace repeating underscores

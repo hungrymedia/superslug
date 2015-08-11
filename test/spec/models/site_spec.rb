@@ -46,4 +46,19 @@ RSpec.describe Site, :type => :model do
     expect(site.slug).to eq("hello-world-05")
   end
 
+  it 'ignores weirdo characters' do
+    site = create(:site, :title => 'Hello World 07!@#$%^*()[]{}+=|\/?<>,.;:\'"`~')
+    expect(site.slug).to eq('hello-world-07')
+  end
+
+  it 'replaces ampersands with "and"' do
+    site = create(:site, :title => 'Hello & World 08')
+    expect(site.slug).to eq('hello-and-world-08')
+  end
+
+  it 'removes trailing spaces' do
+    site = create(:site, :title => 'Hello World 09 ')
+    expect(site.slug).to eq('hello-world-09')
+  end
+
 end
